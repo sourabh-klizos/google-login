@@ -1,0 +1,18 @@
+when react hits this route httplocalhost8000authgooglelogin
+in response i will send what  oauth.google.authorize_redirect(request, redirect_uri)
+this will create a url for user to click and gets token from google  
+and once user has login google will send user's data to me on this route token of user 
+httplocalhost8000authgooglecallbackcode=...
+
+then i will send this token to my fronend and my fronted will redire it to authrosized page  
+
+
+
+
+
+
+
+
+
+
+https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=80667960650-v8dpi2ckvj18n4flg8vldorhd19fmokl.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback&scope=openid+email+profile&state=LQIXvlrHEokUBJhAWGSlfxwlgdkkQW&nonce=FVNy1s85q1nRnpcdoVud
