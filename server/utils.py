@@ -35,48 +35,43 @@
 
 
 
-@app.get('/auth/google/login')
-async def login(request: Request):
-    redirect_uri = request.url_for('auth')
-    # print(await oauth.google.authorize_redirect(request, redirect_uri))
-    # return {"login_url":await oauth.google.authorize_redirect(request, redirect_uri) }
-    return await oauth.google.authorize_redirect(request, redirect_uri)
-
-
-
-
-
-google = oauth.register(
-    name='google',
-    client_id='',
-    client_secret='',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
-    # This is only needed if using openId to fetch user info
-    client_kwargs={'scope': 'openid email profile'},
-    jwks_uri = "https://www.googleapis.com/oauth2/v3/certs"
-)
-
-
-
-
-
-
-
-
 # @app.get('/auth/google/login')
 # async def login(request: Request):
 #     redirect_uri = request.url_for('auth')
+#     # print(await oauth.google.authorize_redirect(request, redirect_uri))
+#     # return {"login_url":await oauth.google.authorize_redirect(request, redirect_uri) }
 #     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
 
 
 
+# google = oauth.register(
+#     name='google',
+#     client_id='',
+#     client_secret='',
+#     access_token_url='https://accounts.google.com/o/oauth2/token',
+#     access_token_params=None,
+#     authorize_url='https://accounts.google.com/o/oauth2/auth',
+#     authorize_params=None,
+#     api_base_url='https://www.googleapis.com/oauth2/v1/',
+#     userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
+#     # This is only needed if using openId to fetch user info
+#     client_kwargs={'scope': 'openid email profile'},
+#     jwks_uri = "https://www.googleapis.com/oauth2/v3/certs"
+# )
+
+
+
+
+
+
+
+
+# # @app.get('/auth/google/login')
+# # async def login(request: Request):
+# #     redirect_uri = request.url_for('auth')
+# #     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
 
@@ -89,13 +84,18 @@ google = oauth.register(
 
 
 
-@app.get("/auth/google/callback")
-async def auth(request: Request):
-    token = await oauth.google.authorize_access_token(request)
-    user = await oauth.google.parse_id_token(request, token)
 
-    request.session["user"] = {
-        "email": user["email"],
-        "name": user["name"]
-    }
-    return RedirectResponse("http://localhost:5173/")
+
+
+
+
+# @app.get("/auth/google/callback")
+# async def auth(request: Request):
+#     token = await oauth.google.authorize_access_token(request)
+#     user = await oauth.google.parse_id_token(request, token)
+
+#     request.session["user"] = {
+#         "email": user["email"],
+#         "name": user["name"]
+#     }
+#     return RedirectResponse("http://localhost:5173/")

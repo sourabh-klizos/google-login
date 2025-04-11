@@ -16,3 +16,15 @@ then i will send this token to my fronend and my fronted will redire it to authr
 
 
 https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=80667960650-v8dpi2ckvj18n4flg8vldorhd19fmokl.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fauth%2Fgoogle%2Fcallback&scope=openid+email+profile&state=LQIXvlrHEokUBJhAWGSlfxwlgdkkQW&nonce=FVNy1s85q1nRnpcdoVud
+
+
+
+
+
+
+"user":{"iss":"https://accounts.google.com","azp":"80667960650-v8dpi2ckvj18n4flg8vldorhd19fmokl.apps.googleusercontent.com",
+"aud":"80667960650-v8dpi2ckvj18n4flg8vldorhd19fmokl.apps.googleusercontent.com","sub":"114303409529938016601",
+"hd":"klizos.com","email":"sourabh.das@klizos.com","email_verified":true,"at_hash":"d5ShOzQ56xN4jO7XU6y3JA",
+"nonce":"s9IZVvfvVmgIRMVZSSKA","name":"Sourabh Kumar Das"
+,"picture":"https://lh3.googleusercontent.com/a/ACg8ocJv2WGDmNDa-jn7LezrkXwEaJx7oTMPfTu6QH-XEpTubqr-Hwo=s96-c"
+,"given_name":"Sourabh ","family_name":"Kumar Das","iat":1744394337,"exp":1744397937}}
