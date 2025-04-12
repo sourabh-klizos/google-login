@@ -1,4 +1,4 @@
-#!/home/sourabh/Desktop/google_login/google-login/server/venv/bin/python3
+#!/home/sourabh/Desktop/google-login/server/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
