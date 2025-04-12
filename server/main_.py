@@ -61,11 +61,14 @@ async def auth(request: Request):
         token = await oauth.google.authorize_access_token(request)
         print("token " ,token)
         user_info = token.get('userinfo')
+        response = {}
         if user_info:
-            # You can implement your own logic here, such as creating a user in your database
-            return {'user': user_info, "token" : token }
+            response['user'] = user_info
         if token:
-            return {"token" : token }
+            response['token'] = token
+        
+        if response:
+            return response
         return {'error': 'Failed to retrieve user information'}
     except Exception as e:
         return {'error': str(e)}
