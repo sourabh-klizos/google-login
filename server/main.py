@@ -82,15 +82,19 @@ async def auth(request: Request):
         token = await oauth.google.authorize_access_token(request)
 
         # 2. Get user info from ID token or Google API
-        user_info = await oauth.google.parse_id_token(request, token)
+        try:
+
+            user_info = await oauth.google.parse_id_token(request, token)
+        except Exception as e:
+            print(e, " -"*40)
         # OR
         # user_info = await oauth.google.get('userinfo', token=token)
 
         # You can now save token in session or DB, etc.
         return JSONResponse(content={
-            "access_token": token.get("access_token"),
-            "id_token": token.get("id_token"),
-            "user_info": user_info
+            "access_token": token,
+            # "id_token": token.get("id_token"),
+            # "user_info": user_info
         })
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": str(e)})
