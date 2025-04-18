@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse , JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlencode
+import httpx
 load_dotenv()
 
 
@@ -73,3 +75,71 @@ async def auth(request: Request):
     except Exception as e:
         return {'error': str(e)}
         
+
+
+
+
+
+CLIENT_ID = os.getenv("LINKEDIN_CLIENT_ID")
+CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET")
+REDIRECT_URI = "http://localhost:8000/auth/linkedin/callback"
+
+LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization"
+LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
+
+
+USERINFO_URL = "https://api.linkedin.com/v2/userinfo"
+
+
+@app.get("/auth/linkedin")
+def linkedin_login():
+    params = {
+        "response_type": "code",
+        "client_id": CLIENT_ID,
+        "redirect_uri": REDIRECT_URI,
+        "scope": "openid profile email", #   "scope": "r_liteprofile r_emailaddress",   <- this breaks url
+        # "state": "random_string_123",
+    }
+    url = f"{LINKEDIN_AUTH_URL}?{urlencode(params)}"
+    return RedirectResponse(url)
+
+
+
+@app.get("/auth/linkedin/callback")
+async def linkedin_callback(request: Request):
+    code = request.query_params.get("code")
+    if not code:
+        return JSONResponse({"error": "No code found in request"}, status_code=400)
+
+    async with httpx.AsyncClient() as client:
+        token_res = await client.post(
+            LINKEDIN_TOKEN_URL,
+            data={
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": REDIRECT_URI,
+                "client_id": CLIENT_ID,
+                "client_secret": CLIENT_SECRET,
+            },
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+        token_data = token_res.json()
+
+        # print(token_data)
+        access_token = token_data.get("access_token")
+        if not access_token:
+            return JSONResponse({"error": "Failed to obtain access token"}, status_code=400)
+
+
+        headers = {"Authorization": f"Bearer {access_token}"}
+        details = await client.get(USERINFO_URL, headers=headers)
+      
+
+        # print(details)
+      
+
+        return {
+            "details": details.json(),
+            "token_data" : token_data
+        }

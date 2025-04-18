@@ -99,3 +99,103 @@
 #         "name": user["name"]
 #     }
 #     return RedirectResponse("http://localhost:5173/")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###########################
+
+
+
+
+
+
+
+CLIENT_ID = os.getenv("LINKEDIN_CLIENT_ID")
+CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET")
+REDIRECT_URI = "http://localhost:8000/auth/linkedin/callback"
+
+LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization"
+LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
+LINKEDIN_PROFILE_URL = "https://api.linkedin.com/v2/me"
+LINKEDIN_EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))"
+
+
+print(CLIENT_ID)
+
+@app.get("/auth/linkedin")
+def linkedin_login():
+    params = {
+        "response_type": "code",
+        "client_id": CLIENT_ID,
+        "redirect_uri": REDIRECT_URI,
+        "scope": "openid profile email",
+        "state": "random_string_123",
+    }
+    url = f"{LINKEDIN_AUTH_URL}?{urlencode(params)}"
+    return RedirectResponse(url)
+
+
+
+
+
+
+
+@app.get("/auth/linkedin/callback")
+async def linkedin_callback(request: Request):
+    code = request.query_params.get("code")
+    if not code:
+        return JSONResponse({"error": "No code found in request"}, status_code=400)
+
+    async with httpx.AsyncClient() as client:
+        # Exchange code for access token
+        token_res = await client.post(
+            LINKEDIN_TOKEN_URL,
+            data={
+                "grant_type": "authorization_code",
+                "code": code,
+                "redirect_uri": REDIRECT_URI,
+                "client_id": CLIENT_ID,
+                "client_secret": CLIENT_SECRET,
+            },
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+
+        token_data = token_res.json()
+        access_token = token_data.get("access_token")
+        if not access_token:
+            return JSONResponse({"error": "Failed to obtain access token"}, status_code=400)
+
+        # Fetch LinkedIn profile
+        headers = {"Authorization": f"Bearer {access_token}"}
+        profile_res = await client.get(LINKEDIN_PROFILE_URL, headers=headers)
+        email_res = await client.get(LINKEDIN_EMAIL_URL, headers=headers)
+
+        return {
+            "profile": profile_res.json(),
+            "email": email_res.json()
+        }
+
+
+# @app.get("/auth/linkedin/callback")
+# async def linkedin_callback(request: Request):
+#     print("Query Params:", dict(request.query_params))
+
+#     error = request.query_params.get("error")
+#     if error:
+#         return JSONResponse({"error": error}, status_code=400)
+
+#     code = request.query_params.get("code")
+#     if not code:
+#         return JSONResponse({"error": "No code found in request"}, status_code=400)
